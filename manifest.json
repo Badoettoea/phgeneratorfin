@@ -1,0 +1,21 @@
+{
+  "name": "Input Nilai Siswa",
+  "short_name": "Nilai Siswa",
+  "description": "A PWA for inputting student grades",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7fafc",
+  "theme_color": "#26a69a",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
