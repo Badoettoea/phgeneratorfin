@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#26a69a">
+  <meta name="description" content="A PWA for inputting student grades">
+  <title>Input Nilai Siswa</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.png">
+  <link rel="apple-touch-icon" href="icon.png">
+  <style>
+    :root {
+      --teal-bright: #26a69a;
+      --teal-light: #4db6ac;
+      --teal-dark: #00897b;
+      --teal-accent: #80cbc4;
+      --text-dark: #2d3748;
+      --background: #f7fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--background);
+      color: var(--text-dark);
+      padding: 1rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .container {
+      max-width: 100%;
+      width: 100%;
+      background-color: white;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      flex: 1;
+    }
+
+    .header {
+      text-align: center;
+      background-color: var(--teal-bright);
+      color: white;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      animation: slideDown 0.5s ease-out;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-1rem); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .user-info {
+      background-color: var(--teal-light);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .user-info label {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-weight: 500;
+    }
+
+    .user-info input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid var(--teal-accent);
+      border-radius: 0.25rem;
+      background-color: white;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .user-info input:focus {
+      outline: none;
+      border-color: var(--teal-dark);
+      box-shadow: 0 0 0 3px rgba(38, 166, 154, 0.2);
+    }
+
+    .input-section {
+      margin-top: 1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+    }
+
+    th, td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    th {
+      background-color: var(--teal-dark);
+      color: white;
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: var(--teal-accent);
+    }
+
+    tr:hover {
+      background-color: var(--teal-light);
+      transition: background-color 0.3s;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.25rem;
+      background-color: white;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: var(--teal-dark);
+      box-shadow: 0 0 0 3px rgba(38, 166, 154, 0.2);
+    }
+
+    input[readonly] {
+      background-color: #edf2f7;
+    }
+
+    button {
+      background-color: var(--teal-bright);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      margin: 1rem auto;
+      display: block;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background-color: var(--teal-dark);
+      transform: translateY(-2px);
+    }
+
+    button:disabled {
+      background-color: #b0bec5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.875rem;
+      color: #718096;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 0.5rem;
+      }
+
+      th, td {
+        display: block;
+        width: 100%;
+        padding: 0.5rem;
+      }
+
+      tr {
+        margin-bottom: 1rem;
+        display: block;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.25rem;
+      }
+
+      th {
+        display: none;
+      }
+
+      td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        display: inline-block;
+        width: 100px;
+        margin-right: 0.5rem;
+      }
+
+      td {
+        display: flex;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="user-info">
+      <h2>GENERATOR NILAI HARIAN SISWA</h2>
+      <div>
+        <label for="nama">Nama Guru:</label>
+        <input type="text" id="nama" placeholder="Masukkan nama Anda">
+      </div>
+      <div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" placeholder="Masukkan email Anda">
+      </div>
+      <div>
+        <label for="mata-pelajaran">Mata Pelajaran:</label>
+        <input type="text" id="mata-pelajaran" placeholder="Masukkan mata pelajaran">
+      </div>
+    </div>
+
+    <div class="header">
+      <h1>Input Nilai Siswa</h1>
+    </div>
+
+    <div class="input-section">
+      <table id="input-table">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Nilai Akhir</th>
+            <th>PH1</th>
+            <th>PH2</th>
+            <th>PH3</th>
+            <th>PH4</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-label="No">1</td>
+            <td data-label="Nilai Akhir"><input type="number" class="nilai-akhir" min="0" max="100" step="0.01" onkeypress="handleEnter(event, this)"></td>
+            <td data-label="PH1"><input type="number" class="ph1" readonly></td>
+            <td data-label="PH2"><input type="number" class="ph2" readonly></td>
+            <td data-label="PH3"><input type="number" class="ph3" readonly></td>
+            <td data-label="PH4"><input type="number" class="ph4" readonly></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <button id="save-btn" onclick="saveData()">SAVE DATA</button>
+    </div>
+
+    <div class="footer">
+      <p>© 2025 MINIMATIS</p>
+    </div>
+  </div>
+
+  <script>
+    // Register service worker for PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('Service Worker registered'))
+          .catch(err => console.log('Service Worker registration failed:', err));
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSavedData();
+      document.querySelector('.nilai-akhir').focus();
+    });
+
+    function handleEnter(event, inputElement) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        const nilaiAkhir = parseFloat(inputElement.value);
+        if (!isNaN(nilaiAkhir) && nilaiAkhir >= 0 && nilaiAkhir <= 100) {
+          const row = inputElement.closest('tr');
+          const ph1 = Math.min(100, Math.floor(Math.random() * ((nilaiAkhir + 5) - (nilaiAkhir - 2) + 1)) + (nilaiAkhir - 2));
+          row.querySelector('.ph1').value = ph1.toFixed(2);
+          const ph2 = Math.floor(Math.random() * ((ph1 + 2) - (ph1 - 5) + 1)) + (ph1 - 5);
+          row.querySelector('.ph2').value = ph2.toFixed(2);
+          const ph3 = Math.floor(Math.random() * ((ph2 + 3) - (ph2 - 3) + 1)) + (ph2 - 3);
+          row.querySelector('.ph3').value = ph3.toFixed(2);
+          const ph4 = (nilaiAkhir * 4) - (ph1 + ph2 + ph3);
+          row.querySelector('.ph4').value = Math.max(0, ph4).toFixed(2);
+          addNewRow();
+          saveToLocalStorage();
+        } else {
+          alert('Nilai akhir harus berupa angka antara 0-100');
+          inputElement.select();
+        }
+      }
+    }
+
+    function addNewRow() {
+      const table = document.getElementById('input-table');
+      const tbody = table.querySelector('tbody');
+      const rowCount = tbody.children.length;
+      const newRow = document.createElement('tr');
+      newRow.innerHTML = `
+        <td data-label="No">${rowCount + 1}</td>
+        <td data-label="Nilai Akhir"><input type="number" class="nilai-akhir" min="0" max="100" step="0.01" onkeypress="handleEnter(event, this)"></td>
+        <td data-label="PH1"><input type="number" class="ph1" readonly></td>
+        <td data-label="PH2"><input type="number" class="ph2" readonly></td>
+        <td data-label="PH3"><input type="number" class="ph3" readonly></td>
+        <td data-label="PH4"><input type="number" class="ph4" readonly></td>
+      `;
+      tbody.appendChild(newRow);
+      newRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      newRow.querySelector('.nilai-akhir').focus();
+    }
+
+    function saveToLocalStorage() {
+      const nama = document.getElementById('nama').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const mataPelajaran = document.getElementById('mata-pelajaran').value.trim();
+      const rows = document.querySelectorAll('#input-table tbody tr');
+      const data = [];
+      rows.forEach(row => {
+        const nilaiAkhir = row.querySelector('.nilai-akhir').value;
+        if (nilaiAkhir) {
+          data.push({
+            no: row.cells[0].textContent,
+            nilaiAkhir: parseFloat(nilaiAkhir),
+            ph1: parseFloat(row.querySelector('.ph1').value),
+            ph2: parseFloat(row.querySelector('.ph2').value),
+            ph3: parseFloat(row.querySelector('.ph3').value),
+            ph4: parseFloat(row.querySelector('.ph4').value)
+          });
+        }
+      });
+      localStorage.setItem('nilaiSiswa', JSON.stringify({ nama, email, mataPelajaran, data }));
+    }
+
+    function loadSavedData() {
+      const saved = localStorage.getItem('nilaiSiswa');
+      if (saved) {
+        const { nama, email, mataPelajaran, data } = JSON.parse(saved);
+        document.getElementById('nama').value = nama;
+        document.getElementById('email').value = email;
+        document.getElementById('mata-pelajaran').value = mataPelajaran;
+        const tbody = document.querySelector('#input-table tbody');
+        tbody.innerHTML = '';
+        data.forEach((item, index) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td data-label="No">${index + 1}</td>
+            <td data-label="Nilai Akhir"><input type="number" class="nilai-akhir" min="0" max="100" step="0.01" value="${item.nilaiAkhir}" onkeypress="handleEnter(event, this)"></td>
+            <td data-label="PH1"><input type="number" class="ph1" value="${item.ph1}" readonly></td>
+            <td data-label="PH2"><input type="number" class="ph2" value="${item.ph2}" readonly></td>
+            <td data-label="PH3"><input type="number" class="ph3" value="${item.ph3}" readonly></td>
+            <td data-label="PH4"><input type="number" class="ph4" value="${item.ph4}" readonly></td>
+          `;
+          tbody.appendChild(row);
+        });
+        addNewRow();
+      }
+    }
+
+    function saveData() {
+      const nama = document.getElementById('nama').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const mataPelajaran = document.getElementById('mata-pelajaran').value.trim();
+      if (!nama || !email || !mataPelajaran) {
+        alert('Harap isi nama, email, dan mata pelajaran terlebih dahulu!');
+        return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        alert('Format email tidak valid!');
+        return;
+      }
+      const rows = document.querySelectorAll('#input-table tbody tr');
+      const data = [];
+      rows.forEach(row => {
+        const nilaiAkhir = row.querySelector('.nilai-akhir').value;
+        if (nilaiAkhir) {
+          data.push({
+            no: row.cells[0].textContent,
+            nilaiAkhir: parseFloat(nilaiAkhir),
+            ph1: parseFloat(row.querySelector('.ph1').value),
+            ph2: parseFloat(row.querySelector('.ph2').value),
+            ph3: parseFloat(row.querySelector('.ph3').value),
+            ph4: parseFloat(row.querySelector('.ph4').value)
+          });
+        }
+      });
+      if (data.length === 0) {
+        alert('Tidak ada data yang akan disimpan!');
+        return;
+      }
+      const btn = document.getElementById('save-btn');
+      btn.disabled = true;
+      btn.textContent = 'Sedang Menyimpan...';
+      setTimeout(() => {
+        const csvContent = [
+          ['Nama Guru', nama],
+          ['Email', email],
+          ['Mata Pelajaran', mataPelajaran],
+          [],
+          ['No', 'Nilai Akhir', 'PH1', 'PH2', 'PH3', 'PH4'],
+          ...data.map(item => [item.no, item.nilaiAkhir, item.ph1, item.ph2, item.ph3, item.ph4])
+        ].map(row => row.join(',')).join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `Data_Nilai_${mataPelajaran.replace(/[^a-z0-9]/gi, '_')}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        alert('Data berhasil disimpan sebagai CSV!');
+        btn.disabled = false;
+        btn.textContent = 'SAVE DATA';
+      }, 500);
+    }
+  </script>
+</body>
+</html>
